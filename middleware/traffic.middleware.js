@@ -78,7 +78,7 @@ export const saveTraffic =
     ] ||
     req.socket.remoteAddress ||
     "";
-  console.log("gete the ip",ip)
+  // console.log("gete the ip",ip)
 
       // today date
       const today =

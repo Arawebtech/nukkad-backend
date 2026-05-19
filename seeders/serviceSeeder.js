@@ -210,9 +210,10 @@ const seedServices = async () => {
        INSERT SERVICES
     ========================= */
 
-    await Service.insertMany(
-      services
-    );
+for (let item of services) {
+  const service = new Service(item);
+  await service.save();
+}
 
     console.log(
       "Services Seeded Successfully"
