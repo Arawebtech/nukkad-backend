@@ -188,7 +188,127 @@ if (req.files?.companyLogo) {
 
 
 
+const uploadFromBuffer = (buffer, folder) => {
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      {
+        folder,
+      },
+      (error, result) => {
+        if (error) return reject(error);
 
+        resolve(result);
+      }
+    );
+
+    stream.end(buffer);
+  });
+};
+
+export const updateAdmin = async (req, res) => {
+  try {
+    const adminId = req.user.id;
+
+    const admin = await Admin.findById(adminId);
+
+    if (!admin) {
+      return res.status(404).json({
+        success: false,
+        message: "Admin not found",
+      });
+    }
+
+    const {
+      name,
+      phone,
+      companyName,
+      address,
+    } = req.body;
+
+    /* ================= BASIC FIELDS ================= */
+
+    if (name) admin.name = name;
+
+    if (phone) admin.phone = phone;
+
+    if (companyName)
+      admin.companyName = companyName;
+
+    if (address)
+      admin.address = address;
+
+    /* ================= COMPANY LOGO ================= */
+
+    if (req.files?.companyLogo?.[0]) {
+      const file =
+        req.files.companyLogo[0];
+
+      // OLD DELETE
+      if (admin.companyLogo?.public_id) {
+        await cloudinary.uploader.destroy(
+          admin.companyLogo.public_id
+        );
+      }
+
+      // NEW UPLOAD
+      const result =
+        await uploadFromBuffer(
+          file.buffer,
+          "admins/companyLogo"
+        );
+
+      admin.companyLogo = {
+        url: result.secure_url,
+        public_id: result.public_id,
+      };
+    }
+
+    /* ================= USER DP ================= */
+
+    if (req.files?.userDp?.[0]) {
+      const file =
+        req.files.userDp[0];
+
+      // OLD DELETE
+      if (admin.userDp?.public_id) {
+        await cloudinary.uploader.destroy(
+          admin.userDp.public_id
+        );
+      }
+
+      // NEW UPLOAD
+      const result =
+        await uploadFromBuffer(
+          file.buffer,
+          "admins/userDp"
+        );
+
+      admin.userDp = {
+        url: result.secure_url,
+        public_id: result.public_id,
+      };
+    }
+
+    await admin.save();
+
+    return res.status(200).json({
+      success: true,
+      message:
+        "Profile updated successfully",
+      admin,
+    });
+  } catch (error) {
+    console.log(
+      "UPLOAD ERROR:",
+      error
+    );
+
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
 /* ================= UPDATE ADMIN PROFILE ================= */
 // export const updateAdmin = async (req, res) => {
 //   try {
@@ -258,82 +378,84 @@ if (req.files?.companyLogo) {
 //   }
 // };
 
-export const updateAdmin = async (req, res) => {
-  try {
-    console.log("BODY:", req.body);
-    console.log("FILES:", req);
+// export const updateAdmin = async (req, res) => {
+//   try {
 
-  const adminId = req.user.id;
 
-    const admin = await Admin.findById(adminId);
+//   const adminId = req.user.id;
 
-    if (!admin) {
-      return res.status(404).json({
-        success: false,
-        message: "Admin not found",
-      });
-    }
+//     const admin = await Admin.findById(adminId);
 
-    const { name, phone, companyName, address } = req.body;
+//     if (!admin) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Admin not found",
+//       });
+//     }
 
-    /* ================= BASIC FIELDS ================= */
-    if (name) admin.name = name;
-    if (phone) admin.phone = phone;
-    if (companyName) admin.companyName = companyName;
-    if (address) admin.address = address;
+//     const { name, phone, companyName, address } = req.body;
 
-    /* ================= COMPANY LOGO (CLOUD ONLY) ================= */
-    if (req.files?.companyLogo?.[0]) {
-      const file = req.files.companyLogo[0];
+//     /* ================= BASIC FIELDS ================= */
+//     if (name) admin.name = name;
+//     if (phone) admin.phone = phone;
+//     if (companyName) admin.companyName = companyName;
+//     if (address) admin.address = address;
 
-      if (admin.companyLogo?.public_id) {
-        await cloudinary.uploader.destroy(admin.companyLogo.public_id);
-      }
+//     /* ================= COMPANY LOGO (CLOUD ONLY) ================= */
+//     if (req.files?.companyLogo?.[0]) {
+//       const file = req.files.companyLogo[0];
 
-      const result = await cloudinary.uploader.upload(file.path, {
-        folder: "admins/companyLogo",
-      });
+//       if (admin.companyLogo?.public_id) {
+//         await cloudinary.uploader.destroy(admin.companyLogo.public_id);
+//       }
 
-      admin.companyLogo = {
-        url: result.secure_url,
-        public_id: result.public_id,
-      };
-    }
+//       const result = await cloudinary.uploader.upload(file.path, {
+//         folder: "admins/companyLogo",
+//       });
 
-    /* ================= USER DP (CLOUD ONLY) ================= */
-    if (req.files?.userDp?.[0]) {
-      const file = req.files.userDp[0];
+//       admin.companyLogo = {
+//         url: result.secure_url,
+//         public_id: result.public_id,
+//       };
+//     }
 
-      if (admin.userDp?.public_id) {
-        await cloudinary.uploader.destroy(admin.userDp.public_id);
-      }
+//     /* ================= USER DP (CLOUD ONLY) ================= */
+//     if (req.files?.userDp?.[0]) {
+//       const file = req.files.userDp[0];
 
-      const result = await cloudinary.uploader.upload(file.path, {
-        folder: "admins/userDp",
-      });
+//       if (admin.userDp?.public_id) {
+//         await cloudinary.uploader.destroy(admin.userDp.public_id);
+//       }
 
-      admin.userDp = {
-        url: result.secure_url,
-        public_id: result.public_id,
-      };
-    }
+//       const result = await cloudinary.uploader.upload(file.path, {
+//         folder: "admins/userDp",
+//       });
 
-    await admin.save();
+//       admin.userDp = {
+//         url: result.secure_url,
+//         public_id: result.public_id,
+//       };
+//     }
 
-    return res.status(200).json({
-      success: true,
-      message: "Profile updated successfully",
-      admin,
-    });
-  } catch (error) {
-    console.log("UPLOAD ERROR:", error);
+//     await admin.save();
 
-    return res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
+//     return res.status(200).json({
+//       success: true,
+//       message: "Profile updated successfully",
+//       admin,
+//     });
+//   } catch (error) {
+//     console.log("UPLOAD ERROR:", error);
+
+//     return res.status(500).json({
+//       success: false,
+//       message: error.message,
+//     });
+//   }
+// };
+
+
+
 export const updatePassword = async (req, res) => {
   try {
     const adminId = req.user.id;
