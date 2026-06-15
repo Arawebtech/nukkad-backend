@@ -9,7 +9,7 @@ import {
   getActiveServices,
   getServices,
   updateService,
-} from "../controllers/serviceController.js";
+} from "../controllers/services.controller.js";
 import upload from "../middleware/upload.js";
 
 const router = express.Router();

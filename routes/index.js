@@ -4,7 +4,8 @@ import adminRoutes from "./adminRoutes.js";
 
 import categoryRoutes from "./categoryRoutes.js";
 
-import serviceRoutes from "./serviceRoutes.js";
+// import serviceRoutes from "./serviceRoutes.js";
+import servicesRoutes from "./services.Routes.js";
 
 import careerRoutes from "./careerRoutes.js";
 
@@ -34,9 +35,14 @@ router.use(
   categoryRoutes
 );
 
+// router.use(
+//   "/service",
+//   serviceRoutes
+// );
+
 router.use(
   "/services",
-  serviceRoutes
+  servicesRoutes
 );
 
 router.use(
