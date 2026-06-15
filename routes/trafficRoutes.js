@@ -12,9 +12,19 @@ const router = express.Router();
 /* =================================
    TRAFFIC ROUTES
 ================================= */
+// router.post(
+//   "/save",
+//   saveTraffic
+// );
 router.post(
   "/save",
-  saveTraffic
+  saveTraffic,
+  (req, res) => {
+    return res.status(200).json({
+      success: true,
+      message: "Traffic saved",
+    });
+  }
 );
 
 router.get(
