@@ -449,6 +449,37 @@ export const getServices = async (req, res) => {
   }
 };
 
+
+export const getActiveServices = async (req, res) => {
+  try {
+    const search = req.query.search || "";
+
+    let query = {
+      active: true, // ✅ Sirf active services
+    };
+
+    if (search) {
+      query.$or = [
+        { name: { $regex: search, $options: "i" } },
+        { slug: { $regex: search, $options: "i" } },
+      ];
+    }
+
+    const services = await Service.find(query).sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      count: services.length,
+      data: services,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 export const getServiceById = async (req, res) => {
   try {
     const { id } = req.params;

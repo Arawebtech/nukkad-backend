@@ -7,6 +7,7 @@ import {
   getServiceBySlug,
   updateService,
   deleteService,
+  getActiveServices,
 } from "../controllers/services.controller.js";
 import upload from "../middleware/upload.js";
 
@@ -21,6 +22,7 @@ const uploadFields = upload.fields([
 router.post("/create", uploadFields, createService);
 
 router.get("/", getServices);
+router.get("/public-services/all", getActiveServices);
 
 router.get("/slug/:slug", getServiceBySlug);
 
