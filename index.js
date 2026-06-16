@@ -75,8 +75,6 @@
 // });
 
 
-
-
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
@@ -94,8 +92,6 @@ const app = express();
    CORS
 ============================== */
 
-// app.use(cors());
-
 app.use(cors({
   origin: [
     "https://admin.nukkadnatak.com",
@@ -110,8 +106,6 @@ app.use(cors({
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
 }));
-
-app.options("*", cors());
 
 /* ==============================
    MIDDLEWARE
