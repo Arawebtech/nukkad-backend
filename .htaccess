@@ -1,0 +1,12 @@
+<IfModule mod_headers.c>
+    # Allow specific origins (Apache doesn't support dynamic origin matching, so we use wildcard or specific)
+    Header always set Access-Control-Allow-Origin "https://nukkadnatak.com"
+    Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+    Header always set Access-Control-Allow-Headers "Content-Type, Authorization"
+    Header always set Access-Control-Allow-Credentials "true"
+
+    # Handle preflight OPTIONS request
+    RewriteEngine On
+    RewriteCond %{REQUEST_METHOD} OPTIONS
+    RewriteRule ^(.*)$ $1 [R=204,L]
+</IfModule>
