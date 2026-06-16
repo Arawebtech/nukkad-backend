@@ -94,7 +94,24 @@ const app = express();
    CORS
 ============================== */
 
-app.use(cors());
+// app.use(cors());
+
+app.use(cors({
+  origin: [
+    "https://admin.nukkadnatak.com",
+    "https://nukkadnatak.com",
+    "http://nukkadnatak.com",
+    "http://admin.nukkadnatak.com",
+    "http://backend.nukkadnatak.com",
+    "http://localhost:3000",
+    "http://localhost:3001"
+  ],
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+}));
+
+app.options("*", cors());
 
 /* ==============================
    MIDDLEWARE
