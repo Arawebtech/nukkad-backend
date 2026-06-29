@@ -16,6 +16,8 @@ const router = express.Router();
 // Accept two separate file fields: "image" (hero banner) and "thumbnail"
 const uploadFields = upload.fields([
   { name: "image", maxCount: 1 },
+  { name: "backgroundImageMobile", maxCount: 1 },
+  { name: "backgroundImage", maxCount: 1 },
   { name: "thumbnail", maxCount: 1 },
 ]);
 

@@ -42,12 +42,12 @@ const serviceSchema = new mongoose.Schema(
       trim: true,
     },
 
-    // ── NEW: Thumbnail ──────────────────────────────
+    // ── Thumbnail ──────────────────────────────────
     thumbnail: {
       imageUrl: String,
       publicId: String,
     },
-    // ────────────────────────────────────────────────
+    // ──────────────────────────────────────────────
 
     heroBanner: {
       image: String,
@@ -56,6 +56,20 @@ const serviceSchema = new mongoose.Schema(
       description: String,
       text: String,
     },
+
+    // ── Background Image (desktop) ─────────────────
+    backgroundImage: {
+      imageUrl: String,
+      publicId: String,
+    },
+    // ──────────────────────────────────────────────
+
+    // ── Background Image (mobile) ──────────────────
+    backgroundImageMobile: {
+      imageUrl: String,
+      publicId: String,
+    },
+    // ──────────────────────────────────────────────
 
     headingDesc: [sectionSchema],
 
